@@ -95,14 +95,17 @@ def add_video_to_playlist(youtube,videoID,playlistID):
  
 
 
-#playlists_insert_response = create_playlist()
-add_video_request = add_video_to_playlist(youtube,"AaGK-fj-BAM", "PLak0R99wjd8r1qK9oC2Wz0dDYZjf8N8KA")
-#print("New playlist id: {}".format(playlists_insert_response["id"]))
+playlists_insert_response = create_playlist()
+add_video_request = add_video_to_playlist(youtube,"AaGK-fj-BAM", "PLak0R99wjd8qlFHgV_qX9flC1s_84DjQB")
+print("New playlist id: {}".format(playlists_insert_response["id"]))
 print("New video inserted {}".format(add_video_request["snippet"]["title"]))
 
 #what inside snippet 
 #publishedAt, channelTitle, resourceId, playlistId, playlistId, description, title, thumbnails
-for x in add_video_request["kind"]:
-  print(x); 
+
+
+
+# Sample python code for search.list
+
 
 
