@@ -93,10 +93,16 @@ def add_video_to_playlist(youtube,videoID,playlistID):
      ).execute()
     return add_video_request
  
+def playlists_delete(youtube, playlistID):
+  youtube.playlists().delete(id=playlistID).execute()
 
 
-playlists_insert_response = create_playlist()
-add_video_request = add_video_to_playlist(youtube,"AaGK-fj-BAM", "PLak0R99wjd8qlFHgV_qX9flC1s_84DjQB")
+
+
+
+#playlists_insert_response = create_playlist()
+#add_video_request = add_video_to_playlist(youtube,"AaGK-fj-BAM", "PLak0R99wjd8qlFHgV_qX9flC1s_84DjQB")
+playlists_delete(youtube, 'PLak0R99wjd8rVIL9Or_sq1I2gSsCRAufH')
 print("New playlist id: {}".format(playlists_insert_response["id"]))
 print("New video inserted {}".format(add_video_request["snippet"]["title"]))
 
