@@ -21,8 +21,10 @@ from oauth2client.tools import argparser, run_flow
 #   https://developers.google.com/youtube/v3/guides/authentication
 # For more information about the client_secrets.json file format, see:
 #   https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-CLIENT_SECRETS_FILE = "client_secrets.json"
 
+
+
+CLIENT_SECRETS_FILE = "client_secrets.json"
 # This variable defines a message to display if the CLIENT_SECRETS_FILE is
 # missing.
 MISSING_CLIENT_SECRETS_MESSAGE = """
@@ -57,12 +59,15 @@ credentials = storage.get()
 if credentials is None or credentials.invalid:
   flags = argparser.parse_args()
   credentials = run_flow(flow, storage, flags)
-
 youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
   http=credentials.authorize(httplib2.Http()))
 
-
-
+'''
+Method Name:create_playlists ---- is a method that creates a playlist to your youtube channel 
+Input: None 
+Output: Playlist object ---- Refer to YouTube API so see what information is within
+        the returned object 
+'''
 def create_playlist(): 
       playlists_insert_response = youtube.playlists().insert(
       part="snippet,status",
@@ -77,7 +82,13 @@ def create_playlist():
       )
      ).execute()
       return playlists_insert_response
-
+'''
+Method Name: add_video_to_playlist ---- is a method that adds youtube videos to your playlist 
+Input: youtube - clientID, videoID- unique video id of YouTube video, playlistID - unique playlist id for 
+      video you want to add to.
+Output:video object that was inserted into specifc playlist. Refer to YouTube API to know specific information 
+      within object  
+'''
 def add_video_to_playlist(youtube,videoID,playlistID):
     add_video_request=youtube.playlistItems().insert(
       part="snippet",
@@ -93,8 +104,43 @@ def add_video_to_playlist(youtube,videoID,playlistID):
      ).execute()
     return add_video_request
  
+'''
+Method Name: playlist_delete ---- deletes a playlist from your youtube channel
+Input: youtube -client id, playlistID - unique playlist id for video you want to add to.
+Output: None 
+'''
+
 def playlists_delete(youtube, playlistID):
   youtube.playlists().delete(id=playlistID).execute()
+
+
+# Sample python code for playlistItems.list
+
+def playlist_items_list_by_playlist_id(youtube, part, maxResults, playlistID):
+  # See full sample for function
+  playlistitems_request = youtube.playlistItems().list(
+    part= part,
+    playlistId=playlistID,
+    maxResults=maxResults
+  ).execute()
+  description_list = []
+  title_list = []
+  while playlistitems_request:
+    playlistitems_list_response = playlistitems_request
+    
+    # Insert titles and descriptions into respected lists 
+    for playlist_item in playlistitems_list_response['items']:
+      title_list.append(playlist_item['snippet']['title'])
+      description_list.append(playlist_item['snippet']['description'])
+
+    playlistitems_request = youtube.playlistItems().list_next(
+      playlistitems_request, playlistitems_list_response)
+  for x in description_list: 
+    print(x.encode("utf-8"))
+    print("\n")
+
+
+playlist_items_list_by_playlist_id(youtube, 'snippet,contentDetails', 25, 'PLak0R99wjd8qZcH2XD8-xr9Zx36sO9FBV')
 
 
 
@@ -102,9 +148,9 @@ def playlists_delete(youtube, playlistID):
 
 #playlists_insert_response = create_playlist()
 #add_video_request = add_video_to_playlist(youtube,"AaGK-fj-BAM", "PLak0R99wjd8qlFHgV_qX9flC1s_84DjQB")
-playlists_delete(youtube, 'PLak0R99wjd8rVIL9Or_sq1I2gSsCRAufH')
-print("New playlist id: {}".format(playlists_insert_response["id"]))
-print("New video inserted {}".format(add_video_request["snippet"]["title"]))
+#playlists_delete(youtube, 'PLak0R99wjd8pLSiUpW2OfUKf709NXz_OH')
+#print("New playlist id: {}".format(playlists_insert_response["id"]))
+#print("New video inserted {}".format(add_video_request["snippet"]["title"]))
 
 #what inside snippet 
 #publishedAt, channelTitle, resourceId, playlistId, playlistId, description, title, thumbnails
